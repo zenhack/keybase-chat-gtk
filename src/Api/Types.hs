@@ -1,4 +1,5 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE TemplateHaskell            #-}
 -- | Types that appear in the keybase chat API.
 module Api.Types
     ( Conversation
@@ -6,8 +7,9 @@ module Api.Types
 
 import Zhp
 
-import qualified Data.Aeson as A
-import           Data.Text  (Text)
+import qualified Data.Aeson    as A
+import qualified Data.Aeson.TH as A
+import           Data.Text     (Text)
 
 newtype Time
     = Time Int64
@@ -73,3 +75,19 @@ data Sender = Sender
     , senderDeviceId   :: DeviceId
     , senderDeviceName :: Text
     }
+
+-- Derive JSON type classes:
+do
+    let mangleFieldLabel = dropPrefix >>> toSnakeCase
+        dropPrefix = dropWhile isLower
+        toSnakeCase = id -- TODO
+        cfg = A.defaultOptions
+            { A.fieldLabelModifier = mangleFieldLabel
+            , A.omitNothingFields = True
+            }
+    -- keep these sorted:
+    A.deriveJSON cfg 'Channel
+    A.deriveJSON cfg 'Conversation
+    A.deriveJSON cfg 'ListResult
+    A.deriveJSON cfg 'Msg
+    A.deriveJSON cfg 'Sender

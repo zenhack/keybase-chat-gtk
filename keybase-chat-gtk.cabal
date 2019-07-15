@@ -1,46 +1,15 @@
 cabal-version:       2.2
 name:                keybase-chat-gtk
 version:             0.1.0.0
--- synopsis:
+synopsis:            Gtk frontend for keybase chat
 -- description:
 homepage:            https://git.zenhack.net/zenhack/keybase-chat-gtk
--- license:
-  -- GPL-2
-  -- GPL-3
-  -- LGPL-2.1
-  -- LGPL-3
-  -- AGPL-3
-  -- BSD2
-  -- BSD3
-  -- MIT
-  -- ISC
-  -- MPL-2.0
-  -- Apache-2.0
-  -- PublicDomain
-  -- AllRightsReserved
+license:             GPL-3.0-or-later
 
 license-file:        LICENSE
 author:              Ian Denhardt
 maintainer:          ian@zenhack.net
 copyright:           2019 Ian Denhardt
--- category:
-  -- Codec
-  -- Concurrency
-  -- Control
-  -- Data
-  -- Database
-  -- Development
-  -- Distribution
-  -- Game
-  -- Graphics
-  -- Language
-  -- Math
-  -- Network
-  -- Sound
-  -- System
-  -- Testing
-  -- Text
-  -- Web
 
 build-type:          Simple
 extra-source-files:

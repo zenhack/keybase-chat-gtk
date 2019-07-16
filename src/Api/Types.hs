@@ -28,7 +28,8 @@ import           Prelude         (tail)
 
 newtype Time
     = Time Int64
-    deriving(A.ToJSON, A.FromJSON, Show, Read, Eq, Ord, Bounded)
+    deriving stock (Show, Read, Eq, Ord, Bounded)
+    deriving newtype (A.ToJSON, A.FromJSON)
 
 data ListResult = ListResult
     { listresCoversations :: [Conversation]
@@ -38,7 +39,8 @@ data ListResult = ListResult
 
 newtype ConversationId
     = ConversationId Text
-    deriving(A.ToJSON, A.FromJSON, Show, Read, Eq, Ord)
+    deriving stock (Show, Read, Eq, Ord)
+    deriving newtype (A.ToJSON, A.FromJSON)
 
 data Conversation = Conversation
     { convId      :: ConversationId
@@ -61,15 +63,18 @@ data Channel = Channel
 -- types instead of wrappers around Text.
 newtype MembersType
     = MembersType Text
-    deriving(A.ToJSON, A.FromJSON, Show, Read, Eq, Ord)
+    deriving stock (Show, Read, Eq, Ord)
+    deriving newtype (A.ToJSON, A.FromJSON)
 
 newtype TopicType
     = TopicType Text
-    deriving(A.ToJSON, A.FromJSON, Show, Read, Eq, Ord)
+    deriving stock (Show, Read, Eq, Ord)
+    deriving newtype (A.ToJSON, A.FromJSON)
 
 newtype MsgId
     = MsgId Int64
-    deriving(A.ToJSON, A.FromJSON, Show, Read, Eq, Ord, Bounded)
+    deriving stock (Show, Read, Eq, Ord, Bounded)
+    deriving newtype (A.ToJSON, A.FromJSON)
 
 data Msg = Msg
     { msgId             :: MsgId
@@ -82,11 +87,13 @@ data Msg = Msg
 
 newtype Uid
     = Uid Text
-    deriving(A.ToJSON, A.FromJSON, Show, Read, Eq, Ord)
+    deriving stock (Show, Read, Eq, Ord)
+    deriving newtype (A.ToJSON, A.FromJSON)
 
 newtype DeviceId
     = DeviceId Text
-    deriving(A.ToJSON, A.FromJSON, Show, Read, Eq, Ord)
+    deriving stock (Show, Read, Eq, Ord)
+    deriving newtype (A.ToJSON, A.FromJSON)
 
 data Sender = Sender
     { senderUid        :: Uid

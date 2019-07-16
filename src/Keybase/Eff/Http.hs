@@ -1,6 +1,8 @@
 module Keybase.Eff.Http
   ( HttpEffect
+  , sendHttpRequest
   , runHttp
+  , FlakeyNetwork(..)
   ) where
 
 import Keybase.Prelude
@@ -14,45 +16,38 @@ import Network.HTTP.Client.TLS (getGlobalManager)
 import UnliftIO.Exception (try)
 
 
+data FlakeyNetwork
+  = FlakeyNetwork
+  deriving stock (Show)
+
 data HttpEffect (m :: Type -> Type) (k :: Type) where
   SendHttpRequest
     :: Request
     -> (Either HttpException (Response LazyByteString) -> m k)
     -> HttpEffect m k
+  deriving stock (Functor, Generic1)
+  deriving anyclass (HFunctor)
 
--- | Send an HTTP request and receive the response. 'Nothing' indicates network
--- flakiness. All other exceptions, most of which indicate the server is
--- misbehaving, are thrown in the 'Error' effect.
+-- | Send an HTTP request and receive the response.
 sendHttpRequest
   :: forall sig m.
      ( Carrier sig m
+     , Member (Error FlakeyNetwork) sig
      , Member (Error HttpException) sig
      , Member HttpEffect sig
      )
   => Request
-  -> m (Maybe (Response LazyByteString))
+  -> m (Response LazyByteString)
 sendHttpRequest request =
-  send (SendHttpRequest request f)
+  send (SendHttpRequest request (either handleException pure))
   where
-    f
-      :: Either HttpException (Response LazyByteString)
-      -> m (Maybe (Response LazyByteString))
-    f = \case
-      Left ex ->
-        case ex of
-          -- These HTTP exceptions seem normal and all indicate a flakey
-          -- connection, translate them all to Nothing.
-          HttpExceptionRequest _ ResponseTimeout -> pure Nothing
-          HttpExceptionRequest _ ConnectionTimeout -> pure Nothing
-          HttpExceptionRequest _ (ConnectionFailure _) -> pure Nothing
+    handleException :: HttpException -> m a
+    handleException = \case
+      HttpExceptionRequest _ ResponseTimeout -> throwError FlakeyNetwork
+      HttpExceptionRequest _ ConnectionTimeout -> throwError FlakeyNetwork
+      HttpExceptionRequest _ (ConnectionFailure _) -> throwError FlakeyNetwork
+      ex -> throwError ex
 
-          -- Everything else looks crazy and should never occur, throw them in
-          -- the Error effect.
-          _ -> throwError ex
-
-
-      Right response ->
-        pure (Just response)
 
 -- | Discharge the 'HttpEffect' using the convenient global TLS manager.
 runHttp

@@ -25,6 +25,10 @@ source-repository head
 common shared-opts
   default-extensions:
       BlockArguments
+    , DeriveAnyClass
+    , DeriveFunctor
+    , DeriveGeneric
+    , DerivingStrategies
     , FlexibleContexts
     , GADTs
     , KindSignatures
@@ -32,6 +36,7 @@ common shared-opts
     , NoImplicitPrelude
     , OverloadedStrings
     , ScopedTypeVariables
+    , ViewPatterns
   build-depends:
       base ^>=4.12
     , zenhack-prelude ^>=0.1
@@ -53,8 +58,11 @@ library keybase-chat-api
     bytestring ^>= 0.10.8,
     http-client ^>= 0.6.4,
     http-client-tls ^>= 0.3.5,
+    http-types ^>= 0.12.3,
     fused-effects ^>= 0.5.0,
+    scientific ^>= 0.3.6,
     unliftio ^>= 0.2.12,
+    unordered-containers ^>= 0.2.9,
   exposed-modules:
       Api
     , Api.Types

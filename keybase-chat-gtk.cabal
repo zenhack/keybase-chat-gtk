@@ -34,6 +34,11 @@ common shared-opts
     , aeson ^>=1.4.4
     , text ^>=1.2.3
     , extra ^>=1.6.17
+    , gi-gtk ^>=3.0.31
+    , gi-gtk-declarative ^>=0.4.3
+    , gi-gtk-declarative-app-simple ^>=0.4.2
+  -- Required by gi-gtk-declarative:
+  ghc-options: -threaded
   default-language:    Haskell2010
 
 library keybase-chat-api

@@ -30,4 +30,12 @@ view' Model =
         [ #title := "Hello, Keybase!"
         , on #destroy Quit
         ]
-        $ widget Label [#label := "TODO: write the app"]
+        $ paned [#orientation := OrientationVertical]
+            (pane defaultPaneProperties $ widget TextView [])
+            (pane defaultPaneProperties $
+                container Box [#orientation := OrientationHorizontal]
+                    [ BoxChild defaultBoxChildProperties { expand = True, fill = True } $
+                        widget TextView []
+                    , widget Button [#label := "Send"]
+                    ]
+            )

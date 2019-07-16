@@ -47,6 +47,7 @@ library keybase-chat-api
       Api
     , Api.Types
     , App
+    , Keybase
   hs-source-dirs:      src
 
 executable keybase-chat-gtk

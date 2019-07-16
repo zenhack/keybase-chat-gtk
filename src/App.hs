@@ -30,12 +30,13 @@ view' Model =
         [ #title := "Hello, Keybase!"
         , on #destroy Quit
         ]
-        $ paned [#orientation := OrientationVertical]
-            (pane defaultPaneProperties $ widget TextView [])
-            (pane defaultPaneProperties $
-                container Box [#orientation := OrientationHorizontal]
-                    [ BoxChild defaultBoxChildProperties { expand = True, fill = True } $
-                        widget TextView []
-                    , widget Button [#label := "Send"]
-                    ]
-            )
+        $ container Box [#orientation := OrientationVertical]
+            [ BoxChild boxChildProps $ widget TextView [#editable := False]
+            , container Box [#orientation := OrientationHorizontal]
+                [ BoxChild boxChildProps $ widget Entry []
+                , widget Button [#label := "Send"]
+                ]
+            ]
+
+
+boxChildProps = defaultBoxChildProperties { expand = True, fill = True }

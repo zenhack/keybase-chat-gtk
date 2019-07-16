@@ -1,7 +1,6 @@
 module Keybase where
 
-import Zhp
-import Data.Text (Text)
+import Keybase.Prelude
 
 import qualified Data.Aeson as Aeson
 

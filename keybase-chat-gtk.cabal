@@ -24,8 +24,14 @@ source-repository head
 
 common shared-opts
   default-extensions:
-      NoImplicitPrelude
+      BlockArguments
+    , FlexibleContexts
+    , GADTs
+    , KindSignatures
+    , LambdaCase
+    , NoImplicitPrelude
     , OverloadedStrings
+    , ScopedTypeVariables
   build-depends:
       base ^>=4.12
     , zenhack-prelude ^>=0.1
@@ -43,11 +49,19 @@ common shared-opts
 
 library keybase-chat-api
   import: shared-opts
+  build-depends:
+    bytestring ^>= 0.10.8,
+    http-client ^>= 0.6.4,
+    http-client-tls ^>= 0.3.5,
+    fused-effects ^>= 0.5.0,
+    unliftio ^>= 0.2.12,
   exposed-modules:
       Api
     , Api.Types
     , App
     , Keybase
+    , Keybase.Eff.Http
+    , Keybase.Prelude
   hs-source-dirs:      src
 
 executable keybase-chat-gtk

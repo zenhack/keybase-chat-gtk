@@ -39,6 +39,7 @@ common shared-opts
     , gi-gtk-declarative-app-simple ^>=0.4.2
     , vector ^>=0.12.0
     , bytestring ^>=0.10.10
+    , safe-exceptions ^>=0.1.7
   -- Required by gi-gtk-declarative:
   ghc-options: -threaded
   default-language:    Haskell2010

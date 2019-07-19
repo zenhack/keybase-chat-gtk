@@ -5,6 +5,7 @@
 -- stdio.
 {-# LANGUAGE DeriveGeneric              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE TemplateHaskell            #-}
 module Api
     ( -- * Connecting to the API.
       Conn
@@ -14,6 +15,7 @@ module Api
 import Zhp
 
 import Control.Concurrent.MVar (MVar, newMVar, withMVar)
+import Control.Exception.Safe  (Exception, throwIO)
 import Control.Monad.IO.Unlift (MonadUnliftIO)
 import GHC.Generics            (Generic)
 import System.Process.Typed
@@ -31,6 +33,8 @@ import qualified Api.Types as AT
 
 import           Data.Aeson           ((.=))
 import qualified Data.Aeson           as A
+import qualified Data.Aeson.TH        as A
+import qualified Data.ByteString      as BS
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Text            as T
 import qualified Data.Text.Encoding   as TE
@@ -40,6 +44,13 @@ data Conn = Conn
     { connApiProc :: Process Handle Handle ()
     , connMutex   :: MVar ()
     }
+
+data DecodeError = DecodeError
+    { deInput  :: String
+    , deErrMsg :: String
+    }
+    deriving(Show)
+instance Exception DecodeError
 
 -- | @'withConn' f@ connects to the API, runs the action passing it the connection,
 -- and then shuts down the connection.
@@ -65,9 +76,15 @@ call Conn{ connApiProc = proc, connMutex = mu } req =
         -- and hand it straight to decode, but I can't find a function that
         -- reads a line and returns it as a ByteString.
         line <- hGetLine (getStdout proc)
-        case A.decodeStrict $ TE.encodeUtf8 (T.pack line) of
-            Just x  -> pure x
-            Nothing -> error "TODO: throw a proper exception"
+        case A.eitherDecodeStrict $ TE.encodeUtf8 (T.pack line) of
+            Right x  ->
+                pure x
+
+            Left msg ->
+                throwIO $ DecodeError
+                    { deInput = line
+                    , deErrMsg = msg
+                    }
 
 data MethodCall param = MethodCall
     { method :: T.Text
@@ -81,7 +98,12 @@ instance A.ToJSON a => A.ToJSON (MethodCall a)
 newtype MethodReturn ret = MethodReturn
     { result :: ret
     }
-    deriving(A.FromJSON, A.ToJSON)
+    deriving(Show, Read, Eq, Generic)
+-- N.B. we want to use the Generic deriving mechanism for JSON here,
+-- rather than GeneralizedNewtypeDeriving, as the latter will omit the
+-- {"reuslt": ...} wrapper, which is the whole point of this type.
+instance A.FromJSON ret => A.FromJSON (MethodReturn ret)
+instance A.ToJSON ret => A.ToJSON (MethodReturn ret)
 
 list :: MonadIO m => Conn -> m AT.ListResult
 list conn =

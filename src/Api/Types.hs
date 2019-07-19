@@ -31,8 +31,8 @@ newtype Time
     deriving(A.ToJSON, A.FromJSON, Show, Read, Eq, Ord, Bounded)
 
 data ListResult = ListResult
-    { listresCoversations :: [Conversation]
-    , listresOffline      :: Bool
+    { listresConversations :: [Conversation]
+    , listresOffline       :: Bool
     }
     deriving(Show, Read, Eq)
 

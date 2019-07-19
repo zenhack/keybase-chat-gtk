@@ -116,9 +116,11 @@ do  let drv =
             >>> tail
             >>> intercalate "_"
 
-    -- keep these sorted:
-    drv 'Channel
-    drv 'Conversation
-    drv 'ListResult
-    drv 'Msg
-    drv 'Sender
+    mconcat <$> traverse drv
+        -- keep these sorted:
+        [ 'Channel
+        , 'Conversation
+        , 'ListResult
+        , 'Msg
+        , 'Sender
+        ]

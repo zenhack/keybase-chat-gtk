@@ -1,34 +1,32 @@
 {
-  "result": {
-    "conversations": [
-      {
-        "id": "abcdef01235390abe0320abc02ff2a0b0acef0a32376816ab3298500ca4329af",
-        "channel": {
-          "name": "crypto_nerds",
-          "public": false,
-          "members_type": "team",
-          "topic_type": "chat",
-          "topic_name": "general"
-        },
-        "unread": false,
-        "active_at": 1563144044,
-        "active_at_ms": 1563144044465,
-        "member_status": "active"
+  "conversations": [
+    {
+      "id": "abcdef01235390abe0320abc02ff2a0b0acef0a32376816ab3298500ca4329af",
+      "channel": {
+        "name": "crypto_nerds",
+        "public": false,
+        "members_type": "team",
+        "topic_type": "chat",
+        "topic_name": "general"
       },
-      {
-        "id": "3782956167bacde1349fa23c389132e89a3289f93106809cef92039508b3289b",
-        "channel": {
-          "name": "alice,bob",
-          "public": false,
-          "members_type": "impteamnative",
-          "topic_type": "chat"
-        },
-        "unread": false,
-        "active_at": 1561784864,
-        "active_at_ms": 1561784864779,
-        "member_status": "active"
-      }
-    ],
-    "offline": false
-  }
+      "unread": false,
+      "active_at": 1563144044,
+      "active_at_ms": 1563144044465,
+      "member_status": "active"
+    },
+    {
+      "id": "3782956167bacde1349fa23c389132e89a3289f93106809cef92039508b3289b",
+      "channel": {
+        "name": "alice,bob",
+        "public": false,
+        "members_type": "impteamnative",
+        "topic_type": "chat"
+      },
+      "unread": false,
+      "active_at": 1561784864,
+      "active_at_ms": 1561784864779,
+      "member_status": "active"
+    }
+  ],
+  "offline": false
 }

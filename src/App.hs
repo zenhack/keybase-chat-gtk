@@ -4,39 +4,74 @@ module App (main) where
 
 import Zhp
 
-import GI.Gtk                        hiding ((:=), main, on)
+import           Data.Text   (Text)
+import qualified Data.Vector as V
+
+import GI.Gtk                        hiding ((:=), Widget, main, on)
 import GI.Gtk.Declarative
 import GI.Gtk.Declarative.App.Simple
 
-data Model = Model
+data ChatMsg = ChatMsg
+    { msgText   :: Text
+    , msgSender :: Text
+    }
+
+data Model = Model [ChatMsg]
 
 data Msg
     = Quit
+
+initialState' :: Model
+initialState' = Model
+    [ ChatMsg
+        { msgText = "Hey, Bob!"
+        , msgSender = "Alice"
+        }
+    , ChatMsg
+        { msgText = "Hey Alice!"
+        , msgSender = "Bob"
+        }
+    ]
 
 main :: IO ()
 main = void $ run App
     { view = view'
     , update = update'
     , inputs = []
-    , initialState = Model
+    , initialState = initialState'
     }
 
 update' :: Model -> Msg -> Transition Model Msg
-update' Model Quit = Exit
+update' _ Quit = Exit
 
 view' :: Model -> AppView Window Msg
-view' Model =
+view' (Model msgs) =
     bin Window
         [ #title := "Hello, Keybase!"
         , on #destroy Quit
         ]
         $ container Box [#orientation := OrientationVertical]
-            [ BoxChild boxChildProps $ widget TextView [#editable := False]
+            [ BoxChild boxChildProps $
+                container Box [#orientation := OrientationVertical] $
+                    fmap
+                        (BoxChild boxChildProps { expand = False } . viewMsg)
+                        (V.fromList msgs)
             , container Box [#orientation := OrientationHorizontal]
                 [ BoxChild boxChildProps $ widget Entry []
                 , widget Button [#label := "Send"]
                 ]
             ]
+
+viewMsg :: ChatMsg -> Widget Msg
+viewMsg msg =
+    container Box [#orientation := OrientationHorizontal]
+        [ BoxChild defaultBoxChildProperties $ widget Label [#label := msgSender msg]
+        , BoxChild boxChildProps $ widget TextView
+            [#editable := False
+            -- TODO: find some way to actually display the text? The normal Gtk API
+            -- involves manipulating a buffer, not sure how to do that...
+            ]
+        ]
 
 
 boxChildProps = defaultBoxChildProperties { expand = True, fill = True }

@@ -26,7 +26,7 @@ import System.Process.Typed
     , proc
     , setStdin
     , setStdout
-    , withProcessWait
+    , withProcessTerm
     )
 
 import qualified Api.Types as AT
@@ -60,7 +60,7 @@ withConn f =
             & setStdin createPipe
             & setStdout createPipe
     in
-    withProcessWait cfg $ \proc -> do
+    withProcessTerm cfg $ \proc -> do
         mu <- liftIO $ newMVar ()
         f Conn
             { connApiProc = proc

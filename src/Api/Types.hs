@@ -99,6 +99,8 @@ data MsgContent
     | MsgAttachment { msgctAttachment :: ContentAttachment }
     | MsgUnfurl { msgctUnfurl :: ContentUnfurl }
     | MsgReaction { msgctReaction :: ContentReaction }
+    | MsgDelete { msgctDelete :: ContentDelete }
+    | MsgHeadline { msgctHeadline :: ContentHeadline }
     deriving(Show, Read, Eq)
 
 newtype ContentText = ContentText
@@ -124,6 +126,16 @@ newtype ContentUnfurl = ContentUnfurl
 
 newtype ContentReaction = ContentReaction
     { ctreactFoo :: Maybe Int
+    }
+    deriving(Show, Read, Eq)
+
+newtype ContentDelete = ContentDelete
+    { ctdelMessageIDs :: [MsgId]
+    }
+    deriving(Show, Read, Eq)
+
+newtype ContentHeadline = ContentHeadline
+    { ctheadHeadline :: Text
     }
     deriving(Show, Read, Eq)
 
@@ -163,9 +175,10 @@ do  let drv =
             toSnakeCase
             >>> dropPrefix
 
-        mangleFieldLabel =
-            -- FIXME: some types have camelCase fields too.
-            toSnakeCase >>> dropPrefix
+        mangleFieldLabel = \case
+            "ctsysSystemType" -> "systemType"
+            "ctdelMessageIDs" -> "messageIDs"
+            lbl -> dropPrefix $ toSnakeCase lbl
 
         toSnakeCase "" = ""
         toSnakeCase (c:cs)
@@ -181,6 +194,8 @@ do  let drv =
         -- keep these sorted:
         [ ''Channel
         , ''ContentAttachment
+        , ''ContentDelete
+        , ''ContentHeadline
         , ''ContentReaction
         , ''ContentSystem
         , ''ContentText

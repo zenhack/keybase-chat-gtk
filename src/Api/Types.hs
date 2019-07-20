@@ -98,6 +98,7 @@ data MsgContent
     | MsgSystem { msgctSystem :: ContentSystem }
     | MsgAttachment { msgctAttachment :: ContentAttachment }
     | MsgUnfurl { msgctUnfurl :: ContentUnfurl }
+    | MsgReaction { msgctReaction :: ContentReaction }
     deriving(Show, Read, Eq)
 
 newtype ContentText = ContentText
@@ -120,6 +121,12 @@ newtype ContentUnfurl = ContentUnfurl
         -- Won't actually appear, just to get this to not fail.
     }
     deriving(Show, Read, Eq)
+
+newtype ContentReaction = ContentReaction
+    { ctreactFoo :: Maybe Int
+    }
+    deriving(Show, Read, Eq)
+
 
 newtype Uid
     = Uid Text
@@ -174,8 +181,9 @@ do  let drv =
         -- keep these sorted:
         [ 'Channel
         , 'ContentAttachment
-        , 'ContentText
+        , 'ContentReaction
         , 'ContentSystem
+        , 'ContentText
         , 'ContentUnfurl
         , 'Conversation
         , 'ListResult

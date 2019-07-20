@@ -101,6 +101,7 @@ data MsgContent
     | MsgReaction { msgctReaction :: ContentReaction }
     | MsgDelete { msgctDelete :: ContentDelete }
     | MsgHeadline { msgctHeadline :: ContentHeadline }
+    | MsgMetadata { msgctMetadata :: ContentMetadata }
     deriving(Show, Read, Eq)
 
 newtype ContentText = ContentText
@@ -136,6 +137,11 @@ newtype ContentDelete = ContentDelete
 
 newtype ContentHeadline = ContentHeadline
     { ctheadHeadline :: Text
+    }
+    deriving(Show, Read, Eq)
+
+newtype ContentMetadata = ContentMetadata
+    { ctmetaConversationTitle :: Text
     }
     deriving(Show, Read, Eq)
 
@@ -178,6 +184,7 @@ do  let drv =
         mangleFieldLabel = \case
             "ctsysSystemType" -> "systemType"
             "ctdelMessageIDs" -> "messageIDs"
+            "ctmetaConversationTitle" -> "conversationTitle"
             lbl -> dropPrefix $ toSnakeCase lbl
 
         toSnakeCase "" = ""
@@ -196,6 +203,7 @@ do  let drv =
         , ''ContentAttachment
         , ''ContentDelete
         , ''ContentHeadline
+        , ''ContentMetadata
         , ''ContentReaction
         , ''ContentSystem
         , ''ContentText

@@ -179,17 +179,17 @@ do  let drv =
 
     mconcat <$> traverse drv
         -- keep these sorted:
-        [ 'Channel
-        , 'ContentAttachment
-        , 'ContentReaction
-        , 'ContentSystem
-        , 'ContentText
-        , 'ContentUnfurl
-        , 'Conversation
-        , 'ListResult
-        , 'Msg
+        [ ''Channel
+        , ''ContentAttachment
+        , ''ContentReaction
+        , ''ContentSystem
+        , ''ContentText
+        , ''ContentUnfurl
+        , ''Conversation
+        , ''ListResult
+        , ''Msg
         , ''MsgContent
-        , 'MsgWrapper
-        , 'ReadResult
-        , 'Sender
+        , ''MsgWrapper
+        , ''ReadResult
+        , ''Sender
         ]

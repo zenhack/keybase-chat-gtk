@@ -10,6 +10,8 @@ module Api
     ( -- * Connecting to the API.
       Conn
     , withConn
+    , list
+    , peekConv
     ) where
 
 import Zhp
@@ -108,3 +110,17 @@ instance A.ToJSON ret => A.ToJSON (MethodReturn ret)
 list :: MonadIO m => Conn -> m AT.ListResult
 list conn =
     result <$> call conn (A.object ["method" .= A.String "list"])
+
+peekConv :: MonadIO m => Conn -> AT.ConversationId -> m [AT.Msg]
+peekConv conn ident =
+    let req = A.object
+            [ "method" .= A.String "read"
+            , "params" .= A.object
+                [ "options" .= A.object
+                    [ "peek" .= A.Bool True
+                    , "conversation_id" .= A.toJSON ident
+                    ]
+                ]
+            ]
+    in
+    fmap AT.msgwrapperMsg . AT.readresMessages . result <$> call conn req

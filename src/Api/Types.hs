@@ -8,6 +8,8 @@ module Api.Types
     , Time(..)
     , ConversationId(..)
     , Channel(..)
+    , ReadResult(..)
+    , MsgWrapper(..)
     , MembersType(..)
     , TopicType(..)
     , MsgId(..)
@@ -33,6 +35,16 @@ newtype Time
 data ListResult = ListResult
     { listresConversations :: [Conversation]
     , listresOffline       :: Bool
+    }
+    deriving(Show, Read, Eq)
+
+data ReadResult = ReadResult
+    { readresMessages :: [MsgWrapper]
+    }
+    deriving(Show, Read, Eq)
+
+newtype MsgWrapper = MsgWrapper
+    { msgwrapperMsg :: Msg
     }
     deriving(Show, Read, Eq)
 
@@ -122,5 +134,7 @@ do  let drv =
         , 'Conversation
         , 'ListResult
         , 'Msg
+        , 'MsgWrapper
+        , 'ReadResult
         , 'Sender
         ]

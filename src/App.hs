@@ -66,11 +66,7 @@ viewMsg :: ChatMsg -> Widget Msg
 viewMsg msg =
     container Box [#orientation := OrientationHorizontal]
         [ BoxChild defaultBoxChildProperties $ widget Label [#label := msgSender msg]
-        , BoxChild boxChildProps $ widget TextView
-            [#editable := False
-            -- TODO: find some way to actually display the text? The normal Gtk API
-            -- involves manipulating a buffer, not sure how to do that...
-            ]
+        , BoxChild boxChildProps $ widget Label [#label := msgText msg]
         ]
 
 

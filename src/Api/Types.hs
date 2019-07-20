@@ -89,6 +89,35 @@ data Msg = Msg
     , msgChannel        :: Channel
     , msgSender         :: Sender
     , msgSentAt         :: Time
+    , msgContent        :: MsgContent
+    }
+    deriving(Show, Read, Eq)
+
+data MsgContent
+    = MsgText { msgctText :: ContentText }
+    | MsgSystem { msgctSystem :: ContentSystem }
+    | MsgAttachment { msgctAttachment :: ContentAttachment }
+    | MsgUnfurl { msgctUnfurl :: ContentUnfurl }
+    deriving(Show, Read, Eq)
+
+newtype ContentText = ContentText
+    { ctxtBody :: Text
+    }
+    deriving(Show, Read, Eq)
+
+newtype ContentSystem = ContentSystem
+    { ctsysSystemType :: Int
+    }
+    deriving(Show, Read, Eq)
+
+newtype ContentAttachment = ContentAttachment
+    { ctattachUploaded :: Bool
+    }
+    deriving(Show, Read, Eq)
+
+newtype ContentUnfurl = ContentUnfurl
+    { ctunfurlFoo :: Maybe Int
+        -- Won't actually appear, just to get this to not fail.
     }
     deriving(Show, Read, Eq)
 
@@ -112,10 +141,23 @@ data Sender = Sender
 do  let drv =
             A.deriveJSON A.defaultOptions
                 { A.fieldLabelModifier = mangleFieldLabel
+                , A.constructorTagModifier = mangleCtorTag
                 , A.omitNothingFields = True
+                , A.sumEncoding = A.TaggedObject
+                    { A.tagFieldName = "type"
+                    -- contentsFieldName is unused; we make sure all of
+                    -- our sums have record arguments, so they get those field
+                    -- names instead:
+                    , A.contentsFieldName = "content"
+                    }
                 }
 
+        mangleCtorTag =
+            toSnakeCase
+            >>> dropPrefix
+
         mangleFieldLabel =
+            -- FIXME: some types have camelCase fields too.
             toSnakeCase >>> dropPrefix
 
         toSnakeCase "" = ""
@@ -131,9 +173,14 @@ do  let drv =
     mconcat <$> traverse drv
         -- keep these sorted:
         [ 'Channel
+        , 'ContentAttachment
+        , 'ContentText
+        , 'ContentSystem
+        , 'ContentUnfurl
         , 'Conversation
         , 'ListResult
         , 'Msg
+        , ''MsgContent
         , 'MsgWrapper
         , 'ReadResult
         , 'Sender

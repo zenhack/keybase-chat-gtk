@@ -28,21 +28,28 @@ import           Data.List.Extra (wordsBy)
 import           Data.Text       (Text)
 import           Prelude         (tail)
 
+-- TODO: would be nice for this to wrap something from the time package;
+-- I(zenhack) just haven't gotten around to figuring out what.
 newtype Time
     = Time Int64
     deriving(A.ToJSON, A.FromJSON, Show, Read, Eq, Ord, Bounded)
 
+-- | Results of the "list" method call.
 data ListResult = ListResult
     { listresConversations :: [Conversation]
     , listresOffline       :: Bool
     }
     deriving(Show, Read, Eq)
 
+-- | Results of read/peek message calls.
 data ReadResult = ReadResult
     { readresMessages :: [MsgWrapper]
     }
     deriving(Show, Read, Eq)
 
+-- | Wrapper around Msg. This is mostly here so Aeson (un)marshals
+-- things correctly; it would be nice to achieve that without
+-- this being in the API.
 newtype MsgWrapper = MsgWrapper
     { msgwrapperMsg :: Msg
     }
@@ -162,7 +169,13 @@ data Sender = Sender
     }
     deriving(Show, Read, Eq)
 
--- Derive JSON type classes:
+-- Derive JSON type classes. We use the template haskell support for
+-- these instead of Generic deriving so do some non-default things
+-- in the derivation. For example, H record field names can't overlap,
+-- but some of the API's ' do. Similarly, some of our variant types
+-- need disambiguating. the mangle* functions help with this.
+--
+-- See the Aeson docs for more info on how this machinery works.
 do  let drv =
             A.deriveJSON A.defaultOptions
                 { A.fieldLabelModifier = mangleFieldLabel
@@ -182,6 +195,8 @@ do  let drv =
             >>> dropPrefix
 
         mangleFieldLabel = \case
+            -- Most of the fields in the keybase API are snake case,
+            -- but a couple of them are camelCase:
             "ctsysSystemType" -> "systemType"
             "ctdelMessageIDs" -> "messageIDs"
             "ctmetaConversationTitle" -> "conversationTitle"

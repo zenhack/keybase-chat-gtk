@@ -41,7 +41,7 @@ import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Text            as T
 import qualified Data.Text.Encoding   as TE
 
--- A Connection to the API
+-- | A Connection to the API
 data Conn = Conn
     { connApiProc :: Process Handle Handle ()
     , connMutex   :: MVar ()
@@ -107,10 +107,12 @@ newtype MethodReturn ret = MethodReturn
 instance A.FromJSON ret => A.FromJSON (MethodReturn ret)
 instance A.ToJSON ret => A.ToJSON (MethodReturn ret)
 
+-- | List conversations.
 list :: MonadIO m => Conn -> m AT.ListResult
 list conn =
     result <$> call conn (A.object ["method" .= A.String "list"])
 
+-- | List messages in a conversation. Don't mark them as read.
 peekConv :: MonadIO m => Conn -> AT.ConversationId -> m [AT.Msg]
 peekConv conn ident =
     let req = A.object

@@ -51,6 +51,9 @@ library keybase-chat-api
       Api
     , Api.Types
     , App
+    , UI.Model
+    , UI.View
+    , UI.Update
   hs-source-dirs:      src
 
 executable keybase-chat-gtk

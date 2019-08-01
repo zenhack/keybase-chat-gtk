@@ -23,10 +23,11 @@ view' (Model msgs) =
         ]
         $ container Box [#orientation := OrientationVertical]
             [ BoxChild boxChildProps $
-                container Box [#orientation := OrientationVertical] $
-                    fmap
-                        (BoxChild boxChildProps { expand = False } . viewMsg)
-                        (V.fromList msgs)
+                bin ScrolledWindow [] $
+                    container Box [#orientation := OrientationVertical] $
+                        fmap
+                            (BoxChild boxChildProps { expand = False } . viewMsg)
+                            (V.fromList msgs)
             , container Box [#orientation := OrientationHorizontal]
                 [ BoxChild boxChildProps $ widget Entry []
                 , widget Button [#label := "Send"]

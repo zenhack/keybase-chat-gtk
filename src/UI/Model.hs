@@ -2,7 +2,7 @@ module UI.Model
     ( ChatMsg(..)
     , Model(..)
     , Msg(..)
-    , initialState
+    , initialState'
     ) where
 
 import Data.Text (Text)
@@ -16,15 +16,7 @@ data Model = Model [ChatMsg]
 
 data Msg
     = Quit
+    | NewMsg ChatMsg
 
-initialState :: Model
-initialState = Model
-    [ ChatMsg
-        { msgText = "Hey, Bob!"
-        , msgSender = "Alice"
-        }
-    , ChatMsg
-        { msgText = "Hey Alice!"
-        , msgSender = "Bob"
-        }
-    ]
+initialState' :: Model
+initialState' = Model []

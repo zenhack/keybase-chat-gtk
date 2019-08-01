@@ -3,20 +3,30 @@
 {-# LANGUAGE TemplateHaskell            #-}
 -- | Types that appear in the keybase chat API.
 module Api.Types
-    ( ListResult(..)
+    ( Channel(..)
+    , ContentAttachment(..)
+    , ContentDelete(..)
+    , ContentHeadline(..)
+    , ContentMetadata(..)
+    , ContentReaction(..)
+    , ContentSystem(..)
+    , ContentText(..)
+    , ContentUnfurl(..)
     , Conversation(..)
-    , Time(..)
-    , ConversationId(..)
-    , Channel(..)
-    , ReadResult(..)
+    , ListResult(..)
+    , Msg(..)
+    , MsgContent(..)
     , MsgWrapper(..)
+    , ReadResult(..)
+    , Sender(..)
+
+    , Time(..)
     , MembersType(..)
     , TopicType(..)
+    , ConversationId(..)
     , MsgId(..)
-    , Msg(..)
     , Uid(..)
     , DeviceId(..)
-    , Sender(..)
     ) where
 
 import Zhp

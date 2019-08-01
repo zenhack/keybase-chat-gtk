@@ -4,6 +4,9 @@ module App (main) where
 
 import Zhp
 
+import qualified Api
+import qualified Api.Types as AT
+
 import Control.Concurrent.Async (concurrently_)
 import Control.Concurrent.STM
 import Pipes                    (yield)
@@ -32,17 +35,20 @@ runUI ch =
         , initialState = initialState'
         }
 
-runDaemon ch =
-    traverse_ (atomically . writeTChan ch . NewMsg) initMsgs
+runDaemon ch = Api.withConn $ \conn -> do
+    (c:_) <- AT.listresConversations <$> Api.list conn
+    msgs <- Api.peekConv conn (AT.convId c)
+    traverse_
+        (atomically . writeTChan ch . NewMsg)
+        [ m | Just m <- map convertMsg msgs]
   where
-    initMsgs :: [ChatMsg]
-    initMsgs =
-        [ ChatMsg
-            { msgText = "Hey, Bob!"
-            , msgSender = "Alice"
+    convertMsg :: AT.Msg -> Maybe ChatMsg
+    convertMsg AT.Msg
+        { AT.msgSender = AT.Sender { AT.senderUsername = username }
+        , AT.msgContent = AT.MsgText (AT.ContentText text)
+        }
+        = Just ChatMsg
+            { msgText = text
+            , msgSender = username
             }
-        , ChatMsg
-            { msgText = "Hey Alice!"
-            , msgSender = "Bob"
-            }
-        ]
+    convertMsg _ = Nothing

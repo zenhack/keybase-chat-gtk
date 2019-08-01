@@ -4,12 +4,14 @@ module App (main) where
 
 import Zhp
 
-import           Data.Text   (Text)
-import qualified Data.Vector as V
+import           Data.Default (def)
+import           Data.Text    (Text)
+import qualified Data.Vector  as V
 
 import GI.Gtk                        hiding ((:=), Widget, main, on)
 import GI.Gtk.Declarative
 import GI.Gtk.Declarative.App.Simple
+
 
 data ChatMsg = ChatMsg
     { msgText   :: Text
@@ -65,7 +67,7 @@ view' (Model msgs) =
 viewMsg :: ChatMsg -> Widget Msg
 viewMsg msg =
     container Box [#orientation := OrientationHorizontal]
-        [ BoxChild defaultBoxChildProperties $ widget Label [#label := msgSender msg]
+        [ BoxChild def $ widget Label [#label := msgSender msg]
         , BoxChild boxChildProps $ widget Label [#label := msgText msg]
         ]
 

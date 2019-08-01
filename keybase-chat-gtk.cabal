@@ -28,6 +28,7 @@ common shared-opts
     , OverloadedStrings
   build-depends:
       base ^>=4.12
+    , data-default ^>=0.7.1
     , zenhack-prelude ^>=0.1
     , unliftio-core ^>=0.1.2
     , typed-process ^>=0.2.6
@@ -35,8 +36,8 @@ common shared-opts
     , text ^>=1.2.3
     , extra ^>=1.6.17
     , gi-gtk ^>=3.0.31
-    , gi-gtk-declarative ^>=0.4.3
-    , gi-gtk-declarative-app-simple ^>=0.4.2
+    , gi-gtk-declarative ^>=0.5
+    , gi-gtk-declarative-app-simple ^>=0.5
     , vector ^>=0.12.0
     , bytestring ^>=0.10.10
     , safe-exceptions ^>=0.1.7
